@@ -15,8 +15,35 @@ function Register() {
         });
     };
 
-    const handleSubmit = () => {
-        // TODO: Send request to backend
+    const handleSubmit = (e) => {
+        console.log(regInfo);
+        const requestOptions = {
+            method: "POST",
+            mode: "cors",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(regInfo)
+        };
+        fetch("http://127.0.0.1:8000/users", requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(
+                        data => {
+                            console.log(data);
+                            if (data.status_code >= 400)
+                                alert(data.detail);
+                            else
+                                alert("Successfully registered user with email: " + data.email);
+                        }
+                    );
+                }
+                else {
+                    alert("Something went wrong");
+                }
+            })
+            .catch((reason) => {
+                alert(reason);
+            });
+        e.preventDefault();
     }
 
     return (
