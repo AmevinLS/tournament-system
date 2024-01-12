@@ -1,14 +1,6 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
-import hashlib
-import secrets
-
-# Utility functions
-
-def hash_password(password: str, salt: str) -> str:
-    hashed_password = hashlib.md5((password + salt).encode("utf-8")).hexdigest()
-    return hashed_password
-
+import security
 
 # CRUD operations
 
@@ -19,8 +11,8 @@ def get_users(db: Session):
     return db.query(models.User).all()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    salt = secrets.token_hex(16)
-    password_hash = hash_password(user.password, salt)
+    salt = security.create_salt()
+    password_hash = security.hash_password(user.password, salt)
 
     db_user = models.User(
         fname=user.fname, 

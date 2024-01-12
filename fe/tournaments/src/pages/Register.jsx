@@ -7,6 +7,14 @@ function Register() {
         fname: "", lname: "", email: "", password: ""
     });
 
+    const [regErrors, setRegErrors] = useState({
+        fname: false, lname: false, email: false, password: false 
+    });
+
+    const updateErrors = (currRegInfo) => {
+        
+    }
+
     const handleChange = (e) => {
         const {id, value} = e.target;
         setRegInfo(oldRegInfo => {
@@ -15,7 +23,8 @@ function Register() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         console.log(regInfo);
         const requestOptions = {
             method: "POST",
@@ -23,27 +32,17 @@ function Register() {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(regInfo)
         };
-        fetch("http://127.0.0.1:8000/users", requestOptions)
-            .then(response => {
-                if (response.ok) {
-                    return response.json().then(
-                        data => {
-                            console.log(data);
-                            if (data.status_code >= 400)
-                                alert(data.detail);
-                            else
-                                alert("Successfully registered user with email: " + data.email);
-                        }
-                    );
-                }
-                else {
-                    alert("Something went wrong");
-                }
-            })
-            .catch((reason) => {
-                alert(reason);
-            });
-        e.preventDefault();
+        const response = await fetch("http://127.0.0.1:8000/users", requestOptions)
+        const data = await response.json();
+
+        if (response.ok) {
+            if (data.status_code >= 400)
+                alert(data.detail);
+            else
+                alert("Successfully registered user with email: " + data.email);
+        } else {
+            alert(data.detail)
+        }
     }
 
     return (
@@ -68,7 +67,7 @@ function Register() {
                 <Form.Control type="password" placeholder="Password" value={regInfo.password} onChange={handleChange}/>
             </Form.Group>
             <Button variant="primary" type="submit">
-                Submit
+                Register
             </Button>
         </Form>
     );

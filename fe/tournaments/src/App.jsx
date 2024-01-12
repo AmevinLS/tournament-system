@@ -6,6 +6,7 @@ import './App.css';
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Register from "./pages/Register";
+import Login from './pages/Login';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />}/>
                     <Route path="register" element={<Register />}/>
+                    <Route path="login" element={<Login />}/>
                 </Route>
             </Routes>
         </BrowserRouter>
