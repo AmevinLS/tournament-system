@@ -15,6 +15,11 @@ function Layout() {
                             <Link to="/register" className="navlink">Register</Link>
                             <Link to="/login" className="navlink">Login</Link>
                         </Nav>
+                        {sessionStorage.getItem("accessToken") ? (
+                            <div>
+                                Account: {sessionStorage.getItem("loginEmail")}
+                            </div>
+                        ) : null}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
