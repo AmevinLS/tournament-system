@@ -12,6 +12,7 @@ function Layout() {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <Link to="/" className="navlink">Home</Link>
+                            <Link to="/tournaments" className="navlink">Tournaments</Link>
                             <Link to="/register" className="navlink">Register</Link>
                             <Link to="/login" className="navlink">Login</Link>
                         </Nav>

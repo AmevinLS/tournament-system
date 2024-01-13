@@ -33,4 +33,4 @@ def delete_users(email: str = None, db: Session = Depends(get_db)):
         if crud.delete_user_by_email(db, email):
             return {"message": f"Successfully deleted user with email {email}"}
         else:
-            return HTTPException(status_code=400, detail=f"User with email {email} not fount")
+            return HTTPException(status_code=400, detail=f"User with email {email} not found")

@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import "./Login.css";
 
+import { backendUrl } from "../components/common";
+import "./Login.css";
 
 function Login() {
     const loginSchema = Yup.object({
@@ -35,14 +36,14 @@ function Login() {
             };
 
             try {
-                const response = await fetch("http://127.0.0.1:8000/token", requestOptions);
+                const response = await fetch(`${backendUrl}/token`, requestOptions);
                 const data = await response.json();
 
                 if (response.ok) {
                     if (data.status_code >= 400)
                         alert(data.detail);
                     else {
-                        alert("Successfully logged in as user with email: " + data.email);
+                        alert("Successfully logged in as user with email: " + values.email);
                         sessionStorage.setItem("accessToken", data.access_token);
                         sessionStorage.setItem("loginEmail", values.email);
                         helpers.resetForm({

@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
 
+import { backendUrl } from "../components/common";
 import "./Register.css";
 
 
@@ -36,7 +37,7 @@ function Register() {
                 body: JSON.stringify(values)
             };
             try {
-                const response = await fetch("http://127.0.0.1:8000/users", requestOptions)
+                const response = await fetch(`${backendUrl}/users`, requestOptions)
                 const data = await response.json();
                 if (response.ok) {
                     if (data.status_code >= 400)

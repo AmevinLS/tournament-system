@@ -1,9 +1,12 @@
 from sqlalchemy.orm import Session
+from uuid import uuid4
+from datetime import datetime
 from . import models, schemas
 import security
 
 # CRUD operations
 
+# users table
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
@@ -40,5 +43,55 @@ def delete_users(db: Session) -> bool:
     if users:
         for user in users:
             db.delete(user)
+        db.commit()
+    return True
+
+
+# tournaments table
+def get_tournament_by_id(db: Session, tourn_id: str):
+    return db.query(models.Tournament).filter(models.Tournament.tourn_id == tourn_id).first()
+
+def get_tournament_by_name(db: Session, name: str):
+    return db.query(models.Tournament).filter(models.Tournament.name == name).first()
+
+def get_tournaments(db: Session):
+    return db.query(models.Tournament).all()
+
+def get_number_of_tournaments(db: Session, exclude_passed: bool = False):
+    if exclude_passed:
+        return db.query(models.Tournament).filter(models.Tournament.time < datetime.now()).count()
+    return db.query(models.Tournament).count()
+
+def create_tournament(db: Session, tournament: schemas.TournamentCreate):
+    tourn_id = uuid4()
+    db_tournament = models.Tournament(
+        tourn_id = tourn_id,
+        name = tournament.name,
+        organizer_email = tournament.organizer_email,
+        time = tournament.time,
+        loc_latitude = tournament.loc_latitude,
+        loc_longitude = tournament.loc_longitude,
+        max_participants = tournament.max_participants,
+        apply_deadline = tournament.apply_deadline
+    )
+    db.add(db_tournament)
+    db.commit()
+    db.refresh(db_tournament)
+    return db_tournament
+
+def delete_tournament_by_id(db: Session, tourn_id: str) -> bool:
+    db_tournament = db.query(models.Tournament).filter(models.Tournament.tourn_id == tourn_id).first()
+    if db_tournament:
+        db.delete(db_tournament)
+        db.commit()
+        return True
+    else:
+        return False
+
+def delete_tournaments(db: Session) -> bool:
+    tournaments = db.query(models.Tournament).all()
+    if tournaments:
+        for tournament in tournaments:
+            db.delete(tournament)
         db.commit()
     return True

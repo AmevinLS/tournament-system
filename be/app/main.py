@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from routers import users
+from routers import users, tournaments
 from security import Token, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from dependencies import get_db
 
@@ -24,7 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(users.router)
-
+app.include_router(tournaments.router)
 
 @app.get("/")
 def read_root():
