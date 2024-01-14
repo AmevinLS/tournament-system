@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Login from './pages/Login';
 import AllTournaments from "./pages/AllTournaments";
 import TournamentDetails from './pages/TournamentDetails';
+import EditTournament from './pages/EditTournament';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                     <Route index element={<Home />}/>
                     <Route path="tournaments" element={<AllTournaments />} />
                     <Route path="tournament_details" element={<TournamentDetails />}/>
+                    <Route path="tournament_edit" element={<EditTournament />}/>
                     <Route path="register" element={<Register />}/>
                     <Route path="login" element={<Login />}/>
                 </Route>

@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
 from sql import schemas, crud, models
 from datetime import datetime, timedelta
+from typing import Annotated
 
 from dependencies import get_db
+from security import oauth2_scheme, get_current_user
 
 router = APIRouter(
     prefix="/tournaments",
@@ -37,6 +39,19 @@ def delete_tournaments(tourn_id: str = None, db: Session = Depends(get_db)):
         else:
             return HTTPException(status_code=400, detail=f"Tournament with tourn_id '{tourn_id}' not found")
 
+@router.post("/update")
+def update_tournament(tournament: schemas.TournamentUpdate, token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    current_user = get_current_user(db, token)
+    current_tournament = crud.get_tournament_by_id(db, tournament.tourn_id)
+    if current_tournament is None:
+        raise HTTPException(status_code=400, detail=f"Tournament with tourn_id '{tournament.tourn_id}' not found")
+    if current_tournament.organizer_email != current_user.email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current user doesn't have access to tournament"
+        )
+    if crud.update_tournament(db, tournament):
+        return {"message": f"Successfully updated tournament with tourn_id '{tournament.tourn_id}'"}
 
 @router.get("/paged")
 def read_tournament_page(page: int, pageSize: int, nameContains: str = "", db: Session = Depends(get_db)):

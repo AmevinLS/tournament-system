@@ -1,3 +1,11 @@
 .navlink {
     margin-right: 1.5rem;
 }
+
+.account-info {
+    display: flex;
+}
+
+.account-info > * {
+    margin: 0.5rem;
+}

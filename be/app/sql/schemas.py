@@ -24,3 +24,7 @@ class TournamentCreate(BaseModel):
         if self.apply_deadline >= self.time:
             raise ValueError("Apply deadline should be later than tournament time")
         return self
+    
+    
+class TournamentUpdate(TournamentCreate):
+    tourn_id: str = Field(..., min_length=1)

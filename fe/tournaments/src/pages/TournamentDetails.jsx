@@ -1,12 +1,15 @@
+import { useSessionStorage } from "usehooks-ts";
 import { useState, useEffect } from "react";
 import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { backendUrl } from "../components/common";
 import "./TournamentDetails.css";
 
 function TournamentDetails() {
+    const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
     const [searchParams, setSearchParams] = useSearchParams();
     const [tournament, setTournament] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTournament(searchParams.get("tourn_id"));
@@ -29,7 +32,7 @@ function TournamentDetails() {
     };
 
     const handleEditClick = (e) => {
-        // TODO
+        navigate(`/tournament_edit?tourn_id=${tournament.tourn_id}`);
     };
 
     return (
@@ -39,7 +42,7 @@ function TournamentDetails() {
                 <Card style={{width: "70%"}}>
                     <Card.Body className="card-body">
                         <Card.Title><b>{tournament.name}</b></Card.Title>
-                        {sessionStorage.loginEmail == tournament.organizer_email ? (
+                        {loginData && (loginData.loginEmail == tournament.organizer_email) ? (
                             <Button variant="primary" onClick={handleEditClick}>Edit data</Button>
                         ) : null}
                     </Card.Body>

@@ -66,6 +66,21 @@ def get_number_of_tournaments(db: Session, name_contains: str = "", exclude_pass
         return query.filter(models.Tournament.time < datetime.now()).count()
     return query.count()
 
+def update_tournament(db: Session, tournament: schemas.TournamentUpdate):
+    if get_tournament_by_id(db, tournament.tourn_id) is None:
+        return False
+    db.query(models.Tournament).filter(models.Tournament.tourn_id == tournament.tourn_id).update({
+        models.Tournament.name: tournament.name,
+        models.Tournament.time: tournament.time,
+        models.Tournament.organizer_email: tournament.organizer_email,
+        models.Tournament.loc_latitude: tournament.loc_latitude,
+        models.Tournament.loc_longitude: tournament.loc_longitude,
+        models.Tournament.max_participants: tournament.max_participants,
+        models.Tournament.apply_deadline: tournament.apply_deadline
+    })
+    db.commit()
+    return True
+
 def create_tournament(db: Session, tournament: schemas.TournamentCreate):
     tourn_id = uuid4()
     db_tournament = models.Tournament(
