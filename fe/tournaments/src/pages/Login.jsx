@@ -1,3 +1,4 @@
+import { useSessionStorage } from "usehooks-ts";
 import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -7,6 +8,8 @@ import { backendUrl } from "../components/common";
 import "./Login.css";
 
 function Login() {
+    const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
+
     const loginSchema = Yup.object({
         email: Yup.string()
             .email("Not a valid email")
@@ -44,8 +47,10 @@ function Login() {
                         alert(data.detail);
                     else {
                         alert("Successfully logged in as user with email: " + values.email);
-                        sessionStorage.setItem("accessToken", data.access_token);
-                        sessionStorage.setItem("loginEmail", values.email);
+                        setLoginData({
+                            accessToken: data.access_token,
+                            loginEmail: values.email
+                        });
                         helpers.resetForm({
                             email: "", password: ""
                         });

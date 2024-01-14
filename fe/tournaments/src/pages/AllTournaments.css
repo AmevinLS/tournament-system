@@ -1,0 +1,11 @@
+.search-div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    width: 70%;
+}
+
+.search-div > * {
+    margin: 0.5rem;
+}

@@ -39,13 +39,16 @@ def delete_tournaments(tourn_id: str = None, db: Session = Depends(get_db)):
 
 
 @router.get("/paged")
-def read_tournament_page(page: int, pageSize: int, db: Session = Depends(get_db)):
-    num_tournaments = crud.get_number_of_tournaments(db, exclude_passed=False)
+def read_tournament_page(page: int, pageSize: int, nameContains: str = "", db: Session = Depends(get_db)):
+    num_tournaments = crud.get_number_of_tournaments(db, name_contains=nameContains, exclude_passed=False)
+
     total_pages = num_tournaments // pageSize + int(num_tournaments % pageSize > 0) 
     offset = (page-1) * pageSize
-    tournamets_on_page = db.query(models.Tournament).order_by(models.Tournament.time).offset(offset).limit(pageSize).all()
+    tournamets_on_page = db.query(models.Tournament
+        ).filter(models.Tournament.name.contains(nameContains)
+        ).order_by(models.Tournament.time
+        ).offset(offset).limit(pageSize).all()
     return {"tournaments": tournamets_on_page, "totalPages": total_pages}
-    
 
 
 @router.post("/clear_and_generate")

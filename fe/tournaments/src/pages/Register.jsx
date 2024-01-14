@@ -29,7 +29,6 @@ function Register() {
         },
         validationSchema: registerSchema,
         onSubmit: async (values, helpers) => {
-            console.log(values);
             const requestOptions = {
                 method: "POST",
                 mode: "cors",

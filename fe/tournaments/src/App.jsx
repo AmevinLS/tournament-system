@@ -8,6 +8,7 @@ import Layout from "./pages/Layout";
 import Register from "./pages/Register";
 import Login from './pages/Login';
 import AllTournaments from "./pages/AllTournaments";
+import TournamentDetails from './pages/TournamentDetails';
 
 
 function App() {
@@ -17,9 +18,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />}/>
-                    <Route path="tournaments" element={<AllTournaments />}>
-                        <Route path="details" element={<AllTournaments />}/>
-                    </Route>
+                    <Route path="tournaments" element={<AllTournaments />} />
+                    <Route path="tournament_details" element={<TournamentDetails />}/>
                     <Route path="register" element={<Register />}/>
                     <Route path="login" element={<Login />}/>
                 </Route>

@@ -1,8 +1,11 @@
+import { useSessionStorage } from "usehooks-ts";
 import { Outlet, Link } from "react-router-dom";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import "./Layout.css";
 
 function Layout() {
+    const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
+
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
@@ -16,9 +19,9 @@ function Layout() {
                             <Link to="/register" className="navlink">Register</Link>
                             <Link to="/login" className="navlink">Login</Link>
                         </Nav>
-                        {sessionStorage.getItem("accessToken") ? (
+                        {loginData ? (
                             <div>
-                                Account: {sessionStorage.getItem("loginEmail")}
+                                Account: {loginData.loginEmail}
                             </div>
                         ) : null}
                     </Navbar.Collapse>

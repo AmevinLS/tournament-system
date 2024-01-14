@@ -12,6 +12,7 @@ function TournamentsTable({ tournaments, onTournamentClick }) {
                 <tr>
                     <th>Name</th>
                     <th>Tournament Time</th>
+                    <th>Organizer</th>
                     <th>Max participants</th>
                     <th>Application Deadline</th>
                 </tr>
@@ -22,6 +23,7 @@ function TournamentsTable({ tournaments, onTournamentClick }) {
                         <tr className="tournament-tr" key={tournament.tourn_id} data-key={tournament.tourn_id} onClick={handleItemClick}>
                             <td>{tournament.name}</td>
                             <td>{tournament.time}</td>
+                            <td>{tournament.organizer_email}</td>
                             <td>{tournament.max_participants}</td>
                             <td>{tournament.apply_deadline}</td>
                         </tr>

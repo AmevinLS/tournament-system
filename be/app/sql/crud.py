@@ -54,13 +54,17 @@ def get_tournament_by_id(db: Session, tourn_id: str):
 def get_tournament_by_name(db: Session, name: str):
     return db.query(models.Tournament).filter(models.Tournament.name == name).first()
 
+def get_tournaments_by_name_contains(db: Session, value: str):
+    return db.query(models.Tournament).filter(models.Tournament.name.contains(value)).all()
+
 def get_tournaments(db: Session):
     return db.query(models.Tournament).all()
 
-def get_number_of_tournaments(db: Session, exclude_passed: bool = False):
+def get_number_of_tournaments(db: Session, name_contains: str = "", exclude_passed: bool = False):
+    query = db.query(models.Tournament).filter(models.Tournament.name.contains(name_contains))
     if exclude_passed:
-        return db.query(models.Tournament).filter(models.Tournament.time < datetime.now()).count()
-    return db.query(models.Tournament).count()
+        return query.filter(models.Tournament.time < datetime.now()).count()
+    return query.count()
 
 def create_tournament(db: Session, tournament: schemas.TournamentCreate):
     tourn_id = uuid4()
