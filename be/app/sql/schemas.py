@@ -4,9 +4,11 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: str = Field(..., min_length=1)
 
-class UserCreate(UserBase):
+class UserRead(UserBase):
     fname: str = Field(..., min_length=1)
     lname: str = Field(..., min_length=1)
+
+class UserCreate(UserRead):    
     password: str = Field(..., min_length=1)
 
 

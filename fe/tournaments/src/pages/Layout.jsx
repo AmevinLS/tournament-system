@@ -1,14 +1,19 @@
 import { useSessionStorage } from "usehooks-ts";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { Container, Nav, Navbar, Button } from "react-bootstrap";
 import "./Layout.css";
 
 function Layout() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
+    const navigate = useNavigate();
 
     const handleLogoutClick = (e) => {
         setLoginData(null);
     };
+
+    const handleAccountClick = (e) => {
+        navigate("/account");
+    }
 
     return (
         <>
@@ -20,13 +25,17 @@ function Layout() {
                         <Nav className="me-auto">
                             <Link to="/" className="navlink">Home</Link>
                             <Link to="/tournaments" className="navlink">Tournaments</Link>
-                            <Link to="/register" className="navlink">Register</Link>
-                            <Link to="/login" className="navlink">Login</Link>
+                            {!loginData ? (
+                                <>
+                                    <Link to="/register" className="navlink">Register</Link>
+                                    <Link to="/login" className="navlink">Login</Link>
+                                </>
+                            ) : null}
                         </Nav>
                         {loginData ? (
                             <div className="account-info">
-                                <p>{loginData.loginEmail}</p>
-                                <Button variant="secondary" size="sm" onClick={handleLogoutClick}>Logout</Button>
+                                <Button variant="outline-info" size="sm" onClick={handleAccountClick}>{loginData.loginEmail}</Button>
+                                <Button variant="outline-danger" size="sm" onClick={handleLogoutClick}>Logout</Button>
                             </div>
                         ) : null}
                     </Navbar.Collapse>

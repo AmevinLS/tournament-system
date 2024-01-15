@@ -56,8 +56,6 @@ function TournamentDetails() {
                 </Card>
             ) : null}
             <Button variant="primary" onClick={handleApplyClick}>Apply to tournament</Button>
-            
-            <div>{searchParams.get("tourn_id")}</div>
         </>
     );
 }

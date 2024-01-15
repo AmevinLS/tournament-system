@@ -24,25 +24,6 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             .required("Cannot be empty")
     });
 
-    const initialValues = (tournamentData) ? {
-        name: tournamentData.name,
-        organizer_email: tournamentData.organizer_email,
-        time: tournamentData.time,
-        loc_latitude: tournamentData.loc_latitude,
-        loc_longitude: tournamentData.loc_longitude,
-        max_participants: tournamentData.max_participants,
-        apply_deadline: tournamentData.apply_deadline
-    }
-    : {
-        name: "",
-        organizer_email: organizerEmail,
-        time: "",
-        loc_latitude: 0.0,
-        loc_longitude: 0.0,
-        max_participants: 2,
-        apply_deadline: ""
-    };
-
     const formik = useFormik({
         initialValues: (tournamentData) ? {
                 name: tournamentData.name,
@@ -56,11 +37,11 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             : {
                 name: "",
                 organizer_email: organizerEmail,
-                time: "2022-01-02T12:00",
+                time: "",
                 loc_latitude: 0.0,
                 loc_longitude: 0.0,
                 max_participants: 2,
-                apply_deadline: "2022-01-01T12:00"
+                apply_deadline: ""
             },
         validationSchema: tournamentSchema,
         onSubmit: async (values, helpers) => {
@@ -83,6 +64,14 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
                     <Form.Label>Time</Form.Label>
                     <Form.Control name="time" type="datetime-local" value={formik.values.time} onChange={formik.handleChange}/>
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="apply_deadline">
+                    <Form.Label>Apply deadline</Form.Label>
+                    <Form.Control name="apply_deadline" type="datetime-local" value={formik.values.apply_deadline} onChange={formik.handleChange}/>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="max_participants">
+                    <Form.Label>Max Participants</Form.Label>
+                    <Form.Control name="max_participants" type="text" value={formik.values.max_participants} onChange={formik.handleChange}/>
+                </Form.Group>
                 <Form.Group className="mb-3" controlId="loc_latitude">
                     <Form.Label>Loc Latitude</Form.Label>
                     <Form.Control name="loc_latitude" type="text" value={formik.values.loc_latitude} onChange={formik.handleChange}/>
@@ -90,14 +79,6 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
                 <Form.Group className="mb-3" controlId="loc_longitude">
                     <Form.Label>Loc Longitude</Form.Label>
                     <Form.Control name="loc_longitude" type="text" value={formik.values.loc_longitude} onChange={formik.handleChange}/>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="max_participants">
-                    <Form.Label>Max Participants</Form.Label>
-                    <Form.Control name="max_participants" type="text" value={formik.values.max_participants} onChange={formik.handleChange}/>
-                </Form.Group>
-                <Form.Group className="mb-3" controlId="apply_deadline">
-                    <Form.Label>Apply deadline</Form.Label>
-                    <Form.Control name="apply_deadline" type="datetime-local" value={formik.values.apply_deadline} onChange={formik.handleChange}/>
                 </Form.Group>
                 <Button variant="primary" type="submit">{submitText}</Button>
             </Form>

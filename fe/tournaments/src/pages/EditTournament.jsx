@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import TournamentForm from "../components/TournamentForm";
 import { backendUrl } from "../components/common";
 import { useSessionStorage } from "usehooks-ts";
+import "./EditTournament.css";
 
 function EditTournament() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,14 +50,16 @@ function EditTournament() {
 
     return (
         <>
-            <h1>{searchParams.tourn_id ? "Edit Tournament" : "Create Tournament"}</h1>
+            <h1>Edit Tournament</h1>
             {tournament ? (
-                <TournamentForm 
-                    tournamentData={tournament}
-                    organizerEmail={loginData.loginEmail} 
-                    submitText={searchParams.tourn_id ? "Save" : "Create"} 
-                    onSubmit={handleSubmit}
-                />
+                <div className="edit-tournament-form">
+                    <TournamentForm 
+                        tournamentData={tournament}
+                        organizerEmail={loginData.loginEmail} 
+                        submitText="Save" 
+                        onSubmit={handleSubmit}
+                    />
+                </div>
             ): null}            
         </>
     );

@@ -39,7 +39,7 @@ def verify_password(plain_password: str, hashed_password: str, salt: str):
     return hash_password(plain_password, salt) == hashed_password
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = crud.get_user_by_email(db, email)
+    user = crud.get_user_full(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password, user.salt):
@@ -67,7 +67,7 @@ def get_current_user(db: Session, token: Annotated[str, Depends(oauth2_scheme)])
         token_data = TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user_by_email(db, email=token_data.email)
+    user = crud.get_user_full(db, email=token_data.email)
     if user is None:
         raise credentials_exception
     return user

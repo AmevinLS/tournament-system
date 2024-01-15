@@ -11,6 +11,14 @@ class User(Base):
     salt = Column(String)
 
 
+class UserPublic(Base):
+    __tablename__ = User.__tablename__
+    __table_args__ = {'extend_existing': True} 
+    fname = Column(String)
+    lname = Column(String)
+    email = Column(String, primary_key=True)
+
+
 class Tournament(Base):
     __tablename__ = "tournaments"
     tourn_id = Column(String, primary_key=True)

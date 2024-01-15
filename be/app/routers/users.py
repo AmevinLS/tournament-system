@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.orm import Session
+from typing import Union, List
 from sql import schemas, crud, models
 
 from dependencies import get_db
@@ -11,13 +12,13 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/", response_model=Union[schemas.UserRead, List[schemas.UserRead]])
 def read_users(email: str = None, db: Session = Depends(get_db)):
     if email is None:
         return crud.get_users(db)
     return crud.get_user_by_email(db, email)
 
-@router.post("/")
+@router.post("/", response_model=schemas.UserRead)
 def add_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if (db.query(models.User).filter(models.User.email == user.email).count() > 0):
         print(db.query(models.User).filter(models.User.email == user.email).count())

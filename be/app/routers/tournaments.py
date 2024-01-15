@@ -24,7 +24,7 @@ def add_tournament(tournament: schemas.TournamentCreate, db: Session = Depends(g
     if crud.get_tournament_by_name(db, tournament.name) is not None:
         print(db.query(models.Tournament).filter(models.Tournament.name == tournament.name).count())
         return HTTPException(status_code=400, detail="Tournament with such name already exists")
-    if crud.get_user_by_email(db, tournament.organizer_email) is None:
+    if crud.get_user_full(db, tournament.organizer_email) is None:
         return HTTPException(status_code=400, detail=f"User {tournament.organizer_email} does not exist")
     return crud.create_tournament(db, tournament)
 

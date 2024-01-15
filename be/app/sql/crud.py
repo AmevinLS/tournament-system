@@ -1,19 +1,23 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from datetime import datetime
+from typing import List
 from . import models, schemas
 import security
 
 # CRUD operations
 
 # users table
-def get_user_by_email(db: Session, email: str):
+def get_user_full(db: Session, email: str) -> models.User:
     return db.query(models.User).filter(models.User.email == email).first()
 
-def get_users(db: Session):
-    return db.query(models.User).all()
+def get_user_by_email(db: Session, email: str) -> models.UserPublic:
+    return db.query(models.UserPublic).filter(models.UserPublic.email == email).first()
 
-def create_user(db: Session, user: schemas.UserCreate):
+def get_users(db: Session) -> List[models.UserPublic]:
+    return db.query(models.UserPublic).all()
+
+def create_user(db: Session, user: schemas.UserCreate) -> models.UserPublic:
     salt = security.create_salt()
     password_hash = security.hash_password(user.password, salt)
 
@@ -27,7 +31,7 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db_user
+    return db.query(models.UserPublic).filter(models.UserPublic.email == user.email)
 
 def delete_user_by_email(db: Session, email: str) -> bool:
     user = db.query(models.User).filter(models.User.email == email).first()
@@ -48,25 +52,26 @@ def delete_users(db: Session) -> bool:
 
 
 # tournaments table
-def get_tournament_by_id(db: Session, tourn_id: str):
+def get_tournament_by_id(db: Session, tourn_id: str) -> models.Tournament:
     return db.query(models.Tournament).filter(models.Tournament.tourn_id == tourn_id).first()
 
-def get_tournament_by_name(db: Session, name: str):
+def get_tournament_by_name(db: Session, name: str) -> models.Tournament:
     return db.query(models.Tournament).filter(models.Tournament.name == name).first()
 
-def get_tournaments_by_name_contains(db: Session, value: str):
+def get_tournaments_by_name_contains(db: Session, value: str) -> List[models.Tournament]:
     return db.query(models.Tournament).filter(models.Tournament.name.contains(value)).all()
 
-def get_tournaments(db: Session):
+def get_tournaments(db: Session) -> List[models.Tournament]:
     return db.query(models.Tournament).all()
 
-def get_number_of_tournaments(db: Session, name_contains: str = "", exclude_passed: bool = False):
+def get_number_of_tournaments(db: Session, name_contains: str = "", exclude_passed: bool = False) -> int:
     query = db.query(models.Tournament).filter(models.Tournament.name.contains(name_contains))
     if exclude_passed:
         return query.filter(models.Tournament.time < datetime.now()).count()
     return query.count()
 
-def update_tournament(db: Session, tournament: schemas.TournamentUpdate):
+def update_tournament(db: Session, tournament: schemas.TournamentUpdate) -> bool:
+    # TODO: add check so that you can't decrease the max participant cap lower than the number already applied
     if get_tournament_by_id(db, tournament.tourn_id) is None:
         return False
     db.query(models.Tournament).filter(models.Tournament.tourn_id == tournament.tourn_id).update({
@@ -81,7 +86,7 @@ def update_tournament(db: Session, tournament: schemas.TournamentUpdate):
     db.commit()
     return True
 
-def create_tournament(db: Session, tournament: schemas.TournamentCreate):
+def create_tournament(db: Session, tournament: schemas.TournamentCreate) -> models.Tournament:
     tourn_id = uuid4()
     db_tournament = models.Tournament(
         tourn_id = tourn_id,

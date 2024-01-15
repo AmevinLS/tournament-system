@@ -41,7 +41,6 @@ function Tournaments() {
     }
 
     const handleTournamentClick = (tourn_id) => {
-        alert(`Clicked on tournament with id: ${tourn_id}`);
         navigate(`/tournament_details?tourn_id=${tourn_id}`);
     }
 
