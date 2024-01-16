@@ -1,13 +1,17 @@
 import { useSessionStorage } from "usehooks-ts";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { Container, Nav, Navbar, Button } from "react-bootstrap";
 import "./Layout.css";
 
 function Layout() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
+    const location = useLocation();
     const navigate = useNavigate();
 
     const handleLogoutClick = (e) => {
+        if (location.pathname == "/account") {
+            navigate("/");
+        }
         setLoginData(null);
     };
 

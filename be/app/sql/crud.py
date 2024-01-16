@@ -55,6 +55,9 @@ def delete_users(db: Session) -> bool:
 def get_tournament_by_id(db: Session, tourn_id: str) -> models.Tournament:
     return db.query(models.Tournament).filter(models.Tournament.tourn_id == tourn_id).first()
 
+def get_tournaments_by_organizer_email(db: Session, organizer_email: str) -> List[models.Tournament]:
+    return db.query(models.Tournament).filter(models.Tournament.organizer_email == organizer_email).all()
+
 def get_tournament_by_name(db: Session, name: str) -> models.Tournament:
     return db.query(models.Tournament).filter(models.Tournament.name == name).first()
 
@@ -148,3 +151,11 @@ def add_participation(db: Session, participation: schemas.ParticipationCreate) -
     db.commit()
     db.refresh(db_participation)
     return db_participation
+
+def get_tournaments_by_user_email_participant(db: Session, user_email: str) -> List[models.Tournament]:
+    return (
+        db.query(models.Tournament)
+        .join(models.Participation, models.Tournament.tourn_id == models.Participation.tourn_id)
+        .filter(models.Participation.user_email == user_email)
+        .all()
+    )

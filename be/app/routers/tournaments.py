@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sql import schemas, crud, models
 from datetime import datetime, timedelta
-from typing import Annotated
+from typing import Annotated, Optional
 
 from dependencies import get_db
 from security import oauth2_scheme, get_current_user
@@ -14,10 +14,12 @@ router = APIRouter(
 )
 
 @router.get("/")
-def read_tournaments(tourn_id: str = None, db: Session = Depends(get_db)):
-    if tourn_id is None:
-        return crud.get_tournaments(db)
-    return crud.get_tournament_by_id(db, tourn_id)
+def read_tournaments(tourn_id: Optional[str] = None, organizer_email: Optional[str] = None, db: Session = Depends(get_db)):
+    if tourn_id is not None:
+        return crud.get_tournament_by_id(db, tourn_id)
+    if organizer_email is not None:
+        return crud.get_tournaments_by_organizer_email(db, organizer_email)
+    return crud.get_tournaments(db)
 
 @router.post("/")
 def add_tournament(tournament: schemas.TournamentCreate, db: Session = Depends(get_db)):

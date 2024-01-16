@@ -32,3 +32,13 @@ def add_participation(participation: schemas.ParticipationCreate, token: Annotat
             detail="Tournament with such ID does not exist"
         )
     return crud.add_participation(db, participation)
+
+@router.get("/tourns_applied")
+def read_applied_to_tournaments(user_email: str, token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):
+    user = get_current_user(db, token)
+    if user.email != user_email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current user doesn't have access to other user's data"
+        )
+    return crud.get_tournaments_by_user_email_participant(db, user_email)
