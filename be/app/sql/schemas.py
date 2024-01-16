@@ -1,8 +1,15 @@
 from pydantic import BaseModel, Field, model_validator
 from datetime import datetime
 
+
+EMAIL_REGEX = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
+EMAIL_KWARGS = {
+    "pattern": EMAIL_REGEX,
+    "examples": ["foobar@gmail.com"]
+}
+
 class UserBase(BaseModel):
-    email: str = Field(..., min_length=1)
+    email: str = Field(..., **EMAIL_KWARGS)
 
 class UserRead(UserBase):
     fname: str = Field(..., min_length=1)
@@ -14,7 +21,7 @@ class UserCreate(UserRead):
 
 class TournamentCreate(BaseModel):
     name: str = Field(..., min_length=1)
-    organizer_email: str = Field(..., min_length=1)
+    organizer_email: str = Field(..., **EMAIL_KWARGS)
     time: datetime
     loc_latitude: float = Field(..., ge=-90, le=90)
     loc_longitude: float = Field(..., ge=-180, le=180)
@@ -27,6 +34,20 @@ class TournamentCreate(BaseModel):
             raise ValueError("Apply deadline should be later than tournament time")
         return self
     
-    
 class TournamentUpdate(TournamentCreate):
     tourn_id: str = Field(..., min_length=1)
+
+
+class ParticipationBase(BaseModel):
+    user_email: str = Field(..., **EMAIL_KWARGS)
+    tourn_id: str = Field(..., min_length=1)
+
+class Participation(ParticipationBase):
+    license_number: str = Field(..., min_length=6, max_length=6)
+    elo: int = Field(..., ge=1)
+
+class ParticipationCreate(Participation):
+    pass
+
+class ParticipationRead(Participation):
+    pass

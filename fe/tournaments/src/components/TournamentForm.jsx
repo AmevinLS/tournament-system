@@ -45,7 +45,7 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             },
         validationSchema: tournamentSchema,
         onSubmit: async (values, helpers) => {
-            onSubmit(values);
+            onSubmit(values, helpers);
         }
     });
 

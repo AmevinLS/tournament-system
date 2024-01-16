@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from datetime import datetime
-from typing import List
+from typing import List, Optional, Union
 from . import models, schemas
 import security
 
@@ -119,3 +119,32 @@ def delete_tournaments(db: Session) -> bool:
             db.delete(tournament)
         db.commit()
     return True
+
+
+# participations table
+def get_participations(
+        db: Session, 
+        user_email: Optional[str] = None,
+        tourn_id: Optional[str] = None
+    ) -> Union[models.Participation, List[models.Participation]]:
+    query = db.query(models.Participation)
+    if user_email is not None:
+        query.filter(models.Participation.user_email == user_email)
+    if user_email is not None:
+        query.filter(models.Participation.tourn_id == tourn_id)
+
+    if None in [user_email, tourn_id]:
+        return query.all()
+    return query.first()
+
+def add_participation(db: Session, participation: schemas.ParticipationCreate) -> models.Participation:
+    db_participation = models.Participation(
+        user_email=participation.user_email,
+        tourn_id=participation.tourn_id,
+        license_number=participation.license_number,
+        elo=participation.elo
+    )
+    db.add(db_participation)
+    db.commit()
+    db.refresh(db_participation)
+    return db_participation

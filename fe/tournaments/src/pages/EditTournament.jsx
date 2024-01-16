@@ -26,7 +26,7 @@ function EditTournament() {
         }
     }
 
-    const handleSubmit = async (newTournament) => {
+    const handleSubmit = async (newTournament, formikHelpers) => {
         try {
             const requestTournament = {...newTournament, tourn_id: tournament.tourn_id};
             const requestOptions = {

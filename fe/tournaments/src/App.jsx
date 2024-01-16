@@ -11,6 +11,7 @@ import AllTournaments from "./pages/AllTournaments";
 import TournamentDetails from './pages/TournamentDetails';
 import EditTournament from './pages/EditTournament';
 import Account from './pages/Account';
+import ApplyToTournament from './pages/ApplyToTournament';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                     <Route path="tournaments" element={<AllTournaments />} />
                     <Route path="tournament_details" element={<TournamentDetails />}/>
                     <Route path="tournament_edit" element={<EditTournament />}/>
+                    <Route path="tournament_apply" element={<ApplyToTournament />}/>
                     <Route path="register" element={<Register />}/>
                     <Route path="login" element={<Login />}/>
                     <Route path="account" element={<Account/>}/>

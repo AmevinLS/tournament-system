@@ -28,7 +28,7 @@ function TournamentDetails() {
     };
 
     const handleApplyClick = (e) => {
-        // TODO
+        navigate(`/tournament_apply?tourn_id=${tournament.tourn_id}`);
     };
 
     const handleEditClick = (e) => {
