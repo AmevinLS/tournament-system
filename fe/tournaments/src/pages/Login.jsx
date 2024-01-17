@@ -1,14 +1,22 @@
 import { useSessionStorage } from "usehooks-ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 import { backendUrl } from "../components/common";
 import "./Login.css";
+import { useEffect } from "react";
 
 function Login() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
+
+    // useEffect(() => {
+    //     if (loginData) {
+    //         const { from } = location.state || {from: { pathname: "/"}}
+    //         return <Navigate to={from}/>
+    //     }
+    // }, [loginData])
 
     const loginSchema = Yup.object({
         email: Yup.string()

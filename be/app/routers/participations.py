@@ -13,7 +13,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}}
 )
 
-@router.get("/", response_model=Union[schemas.ParticipationRead, List[schemas.ParticipationRead]])
+@router.get("/", response_model=Union[Optional[schemas.ParticipationRead], List[schemas.ParticipationRead]])
 def read_participations(user_email: Optional[str] = None, tourn_id: Optional[str] = None, db: Session = Depends(get_db)):
     return crud.get_participations(db, user_email=user_email, tourn_id=tourn_id)
 

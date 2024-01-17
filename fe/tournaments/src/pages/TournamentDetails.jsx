@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { backendUrl } from "../components/common";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "./TournamentDetails.css";
+import LocationMap from "../components/LocationMap";
 
 function TournamentDetails() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
@@ -11,9 +13,19 @@ function TournamentDetails() {
     const [tournament, setTournament] = useState(null);
     const navigate = useNavigate();
 
+    const [isRegistered, setIsRegistered] = useState(false);
+
     useEffect(() => {
         fetchTournament(searchParams.get("tourn_id"));
     }, [searchParams]);
+
+    useEffect(() => {
+        if (loginData) {
+            fetchParticipation(searchParams.get("tourn_id"), loginData.loginEmail);
+        } else {
+            setIsRegistered(false);
+        }
+    }, [searchParams, loginData]);
 
     const fetchTournament = async (tourn_id) => {
         try {
@@ -21,6 +33,18 @@ function TournamentDetails() {
             const data = await response.json();
             if (response.ok) {
                 setTournament(data);
+            }
+        } catch (error) {
+            alert(error);
+        }
+    };
+
+    const fetchParticipation = async (tourn_id, user_email) => {
+        try {
+            const response = await fetch(`${backendUrl}/participations?tourn_id=${tourn_id}&user_email=${user_email}`);
+            const data = await response.json();
+            if (response.ok) {
+                setIsRegistered(!!data);
             }
         } catch (error) {
             alert(error);
@@ -52,10 +76,13 @@ function TournamentDetails() {
                         <ListGroupItem><i>Max participants:</i> {tournament.max_participants}</ListGroupItem>
                         <ListGroupItem><i>Apply deadline:</i> {tournament.apply_deadline}</ListGroupItem>
                         <ListGroupItem><i>Location:</i> ({tournament.loc_latitude}, {tournament.loc_longitude})</ListGroupItem>
+                        <LocationMap latitude={tournament.loc_latitude} longitude={tournament.loc_longitude} markerText={tournament.name}/>
                     </ListGroup>
                 </Card>
             ) : null}
-            <Button variant="primary" onClick={handleApplyClick}>Apply to tournament</Button>
+            <Button variant="primary" onClick={handleApplyClick} disabled={isRegistered}>
+                {!isRegistered ? "Apply to tournament" : "Already applied"}
+            </Button>
         </>
     );
 }

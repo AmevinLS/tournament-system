@@ -129,13 +129,14 @@ def get_participations(
         db: Session, 
         user_email: Optional[str] = None,
         tourn_id: Optional[str] = None
-    ) -> Union[models.Participation, List[models.Participation]]:
+    ) -> Union[Optional[models.Participation], List[models.Participation]]:
+    print(user_email, tourn_id)
     query = db.query(models.Participation)
     if user_email is not None:
-        query.filter(models.Participation.user_email == user_email)
-    if user_email is not None:
-        query.filter(models.Participation.tourn_id == tourn_id)
-
+        query = query.filter(models.Participation.user_email == user_email)
+    if tourn_id is not None:
+        query = query.filter(models.Participation.tourn_id == tourn_id)
+    
     if None in [user_email, tourn_id]:
         return query.all()
     return query.first()

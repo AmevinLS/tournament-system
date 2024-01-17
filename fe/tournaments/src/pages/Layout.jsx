@@ -2,6 +2,7 @@ import { useSessionStorage } from "usehooks-ts";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { Container, Nav, Navbar, Button } from "react-bootstrap";
 import "./Layout.css";
+import ConfirmButton from "../components/ConfirmButton";
 
 function Layout() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
@@ -39,7 +40,7 @@ function Layout() {
                         {loginData ? (
                             <div className="account-info">
                                 <Button variant="outline-info" size="sm" onClick={handleAccountClick}>{loginData.loginEmail}</Button>
-                                <Button variant="outline-danger" size="sm" onClick={handleLogoutClick}>Logout</Button>
+                                <ConfirmButton variant="outline-danger" size="sm" onClick={handleLogoutClick}>Logout</ConfirmButton>
                             </div>
                         ) : null}
                     </Navbar.Collapse>

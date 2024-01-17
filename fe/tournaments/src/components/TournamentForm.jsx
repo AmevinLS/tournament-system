@@ -3,6 +3,9 @@ import { Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+import ConfirmButton from "./ConfirmButton";
+import LocationMap from "./LocationMap";
+
 function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }) {
     const tournamentSchema = Yup.object({
         name: Yup.string()
@@ -13,12 +16,14 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
         time: Yup.date()
             .required("Cannot be empty"),
         loc_latitude: Yup.number()
+            .min(-90, "Must be in range [-90, 90]").max(90, "Must be in range [-90, 90]")
             .required("Cannot be empty"),
         loc_longitude: Yup.number()
+            .min(-180, "Must be in range [-180, 180]").max(180, "Must be in range [-180, 180]")
             .required("Cannot be empty"),
         max_participants: Yup.number()
             .required("Cannot be empty")
-            .positive("Must be positive")
+            .min(2, "Must be at least 2")
             .integer(),
         apply_deadline: Yup.date()
             .required("Cannot be empty")
@@ -54,32 +59,40 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             <Form onSubmit={formik.handleSubmit}>
                 <Form.Group className="mb-3" controlId="name">
                     <Form.Label>Name</Form.Label>
-                    <Form.Control name="name" type="text" value={formik.values.name} onChange={formik.handleChange}/>
+                    <Form.Control name="name" type="text" value={formik.values.name} onChange={formik.handleChange} isInvalid={formik.touched.name && !!formik.errors.name}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="organizer_email">
                     <Form.Label>Organizer</Form.Label>
-                    <Form.Control name="organizer_email" type="text" value={formik.values.organizer_email} onChange={formik.handleChange} disabled/>
+                    <Form.Control name="organizer_email" type="text" value={formik.values.organizer_email} onChange={formik.handleChange} isInvalid={formik.touched.organizer_email && !!formik.errors.organizer_email} disabled/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.organizer_email}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="time">
                     <Form.Label>Time</Form.Label>
-                    <Form.Control name="time" type="datetime-local" value={formik.values.time} onChange={formik.handleChange}/>
+                    <Form.Control name="time" type="datetime-local" value={formik.values.time} onChange={formik.handleChange} isInvalid={formik.touched.time && !!formik.errors.time}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.time}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="apply_deadline">
                     <Form.Label>Apply deadline</Form.Label>
-                    <Form.Control name="apply_deadline" type="datetime-local" value={formik.values.apply_deadline} onChange={formik.handleChange}/>
+                    <Form.Control name="apply_deadline" type="datetime-local" value={formik.values.apply_deadline} onChange={formik.handleChange} isInvalid={formik.touched.apply_deadline && !!formik.errors.apply_deadline}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.apply_deadline}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="max_participants">
                     <Form.Label>Max Participants</Form.Label>
-                    <Form.Control name="max_participants" type="text" value={formik.values.max_participants} onChange={formik.handleChange}/>
+                    <Form.Control name="max_participants" type="text" value={formik.values.max_participants} onChange={formik.handleChange} isInvalid={formik.touched.max_participants && !!formik.errors.max_participants}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.max_participants}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="loc_latitude">
                     <Form.Label>Loc Latitude</Form.Label>
-                    <Form.Control name="loc_latitude" type="text" value={formik.values.loc_latitude} onChange={formik.handleChange}/>
+                    <Form.Control name="loc_latitude" type="text" value={formik.values.loc_latitude} onChange={formik.handleChange} isInvalid={formik.touched.loc_latitude && !!formik.errors.loc_latitude}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.loc_latitude}</Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="loc_longitude">
                     <Form.Label>Loc Longitude</Form.Label>
-                    <Form.Control name="loc_longitude" type="text" value={formik.values.loc_longitude} onChange={formik.handleChange}/>
+                    <Form.Control name="loc_longitude" type="text" value={formik.values.loc_longitude} onChange={formik.handleChange} isInvalid={formik.touched.loc_longitude && !!formik.errors.loc_longitude}/>
+                    <Form.Control.Feedback type="invalid">{formik.errors.loc_longitude}</Form.Control.Feedback>
                 </Form.Group>
+                <LocationMap latitude={formik.values.loc_latitude} longitude={formik.values.loc_longitude} markerText="Pog"/>
                 <Button variant="primary" type="submit">{submitText}</Button>
             </Form>
         </>
