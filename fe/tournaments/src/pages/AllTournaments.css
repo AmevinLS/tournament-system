@@ -3,7 +3,11 @@
     flex-direction: row;
     flex-wrap: nowrap;
 
-    width: 70%;
+    /* width: 70%; */
+}
+
+.search-div:first-child() {
+    width: 30%;
 }
 
 .search-div > * {

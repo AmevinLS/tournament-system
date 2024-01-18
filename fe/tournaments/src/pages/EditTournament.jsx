@@ -4,6 +4,7 @@ import TournamentForm from "../components/TournamentForm";
 import { backendUrl } from "../components/common";
 import { useSessionStorage } from "usehooks-ts";
 import "./EditTournament.css";
+import PageContainer from "../components/PageContainer";
 
 function EditTournament() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -49,7 +50,7 @@ function EditTournament() {
     };
 
     return (
-        <>
+        <PageContainer>
             <h1>Edit Tournament</h1>
             {tournament ? (
                 <div className="edit-tournament-form">
@@ -61,7 +62,7 @@ function EditTournament() {
                     />
                 </div>
             ): null}            
-        </>
+        </PageContainer>
     );
 }
 

@@ -5,6 +5,7 @@ import * as Yup from "yup";
 
 import { backendUrl } from "../components/common";
 import "./Register.css";
+import PageContainer from "../components/PageContainer";
 
 
 const registerSchema = Yup.object({
@@ -56,50 +57,53 @@ function Register() {
     });
 
     return (
-        <Form className="register-form" onSubmit={formik.handleSubmit}>
-            <Form.Group className="mb-3" controlId="fname">
-                <Form.Label>First name</Form.Label>
-                <Form.Control name="fname" type="text" placeholder="Enter first name" value={formik.values.fname} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.fname && formik.errors.fname ? (
-                        <div className="text-danger">{formik.errors.fname}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
+        <PageContainer>
+            <h1>Register</h1>
+            <Form className="register-form" onSubmit={formik.handleSubmit}>
+                <Form.Group className="mb-3" controlId="fname">
+                    <Form.Label>First name</Form.Label>
+                    <Form.Control name="fname" type="text" placeholder="Enter first name" value={formik.values.fname} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.fname && formik.errors.fname ? (
+                            <div className="text-danger">{formik.errors.fname}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="lname">
-                <Form.Label>Last name</Form.Label>
-                <Form.Control name="lname" type="text" placeholder="Enter last name" value={formik.values.lname} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.lname && formik.errors.lname ? (
-                        <div className="text-danger">{formik.errors.lname}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
+                <Form.Group className="mb-3" controlId="lname">
+                    <Form.Label>Last name</Form.Label>
+                    <Form.Control name="lname" type="text" placeholder="Enter last name" value={formik.values.lname} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.lname && formik.errors.lname ? (
+                            <div className="text-danger">{formik.errors.lname}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="email">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control name="email" type="email" placeholder="Enter email" value={formik.values.email} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.email && formik.errors.email ? (
-                        <div className="text-danger">{formik.errors.email}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
+                <Form.Group className="mb-3" controlId="email">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control name="email" type="email" placeholder="Enter email" value={formik.values.email} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.email && formik.errors.email ? (
+                            <div className="text-danger">{formik.errors.email}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control name="password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.password && formik.errors.password ? (
-                        <div className="text-danger">{formik.errors.password}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
-            <Button variant="primary" type="submit">
-                Register
-            </Button>
-        </Form>
+                <Form.Group className="mb-3" controlId="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control name="password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.password && formik.errors.password ? (
+                            <div className="text-danger">{formik.errors.password}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                    Register
+                </Button>
+            </Form>
+        </PageContainer>
     );
 }
 

@@ -6,6 +6,7 @@ import { backendUrl } from "../components/common";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "./TournamentDetails.css";
 import LocationMap from "../components/LocationMap";
+import PageContainer from "../components/PageContainer";
 
 function TournamentDetails() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
@@ -60,7 +61,7 @@ function TournamentDetails() {
     };
 
     return (
-        <>
+        <PageContainer>
             <h1>Tournament Details</h1>
             {tournament ? (
                 <Card style={{width: "70%"}}>
@@ -83,7 +84,7 @@ function TournamentDetails() {
             <Button variant="primary" onClick={handleApplyClick} disabled={isRegistered}>
                 {!isRegistered ? "Apply to tournament" : "Already applied"}
             </Button>
-        </>
+        </PageContainer>
     );
 }
 

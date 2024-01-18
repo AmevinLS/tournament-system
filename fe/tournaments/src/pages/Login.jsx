@@ -7,16 +7,10 @@ import * as Yup from "yup";
 import { backendUrl } from "../components/common";
 import "./Login.css";
 import { useEffect } from "react";
+import PageContainer from "../components/PageContainer";
 
 function Login() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
-
-    // useEffect(() => {
-    //     if (loginData) {
-    //         const { from } = location.state || {from: { pathname: "/"}}
-    //         return <Navigate to={from}/>
-    //     }
-    // }, [loginData])
 
     const loginSchema = Yup.object({
         email: Yup.string()
@@ -74,30 +68,39 @@ function Login() {
     })
 
     return (
-        <Form className="login-form" onSubmit={formik.handleSubmit}>
-            <Form.Group className="mb-3" controlId="email">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control name="email" type="text" placeholder="Enter email" value={formik.values.email} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.email && formik.errors.email ? (
-                        <div className="text-danger">{formik.errors.email}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
+        <PageContainer>
+            <h1>Log In</h1>
+            <p style={{paddingLeft: "1rem"}}>
+                <i>Don't have an account?  </i>
+                <Button size="sm" variant="outline-info" onClick={() => {navigate("/register")}}>
+                    Register here
+                </Button>
+            </p>
+            <Form className="login-form" onSubmit={formik.handleSubmit}>
+                <Form.Group className="mb-3" controlId="email">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control name="email" type="text" placeholder="Enter email" value={formik.values.email} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.email && formik.errors.email ? (
+                            <div className="text-danger">{formik.errors.email}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
 
-            <Form.Group className="mb-3" controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control name="password" type="password" placeholder="Enter password" value={formik.values.password} onChange={formik.handleChange}/>
-                <Form.Text className="text-danger">
-                    {formik.touched.password && formik.errors.password ? (
-                        <div className="text-danger">{formik.errors.password}</div>
-                    ) : null}
-                </Form.Text>
-            </Form.Group>
-            <Button variant="primary" type="submit">
-                Login
-            </Button>
-        </Form>
+                <Form.Group className="mb-3" controlId="password">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control name="password" type="password" placeholder="Enter password" value={formik.values.password} onChange={formik.handleChange}/>
+                    <Form.Text className="text-danger">
+                        {formik.touched.password && formik.errors.password ? (
+                            <div className="text-danger">{formik.errors.password}</div>
+                        ) : null}
+                    </Form.Text>
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                    Login
+                </Button>
+            </Form>
+        </PageContainer>
     );
 }
 

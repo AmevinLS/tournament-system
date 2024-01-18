@@ -1,5 +1,4 @@
-import { Component } from "react";
-import { Route, Navigate } from "react-router-dom";
+import { Route, Navigate, Outlet } from "react-router-dom";
 import { useSessionStorage } from "usehooks-ts";
 
 

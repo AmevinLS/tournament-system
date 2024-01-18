@@ -1,8 +1,10 @@
+import PageContainer from "../components/PageContainer";
+
 function Home() {
     return (
-        <>
-            <p>This is Home</p>
-        </>
+        <PageContainer>
+            <h1>Home page, nothing to see here</h1>
+        </PageContainer>
     );
 }
 

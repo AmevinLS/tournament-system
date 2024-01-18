@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import TournamentsTable from "../components/TournamentsTable";
 import { backendUrl } from "../components/common";
 import "./AllTournaments.css";
+import PageContainer from "../components/PageContainer";
 
 const ITEMS_PER_PAGE = 2;
 
@@ -57,12 +58,17 @@ function Tournaments() {
         setSearchBoxText("");
     }
 
+    const handleCreateTournamentClick = () => {
+        navigate("/tournament_create");
+    }
+
     return (
-        <>
+        <PageContainer>
             <div className="search-div">
                 <Form.Control type="text" id="searchText" placeholder="Search tournament names" value={searchBoxText} onChange={handleSearchChange}/>
                 <Button variant="primary" onClick={handleSearchClick}>Search</Button>
                 <Button variant="secondary" onClick={handleResetClick}>Reset</Button>
+                <Button variant="light" onClick={handleCreateTournamentClick}>Create Tournament</Button>
             </div>
 
             <TournamentsTable tournaments={tournaments} onTournamentClick={handleTournamentClick}/>
@@ -74,7 +80,7 @@ function Tournaments() {
                     </Pagination.Item>
                 ))}
             </Pagination>
-        </>
+        </PageContainer>
     )
 }
 

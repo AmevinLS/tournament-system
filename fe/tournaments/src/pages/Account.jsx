@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Tabs, Tab } from "react-bootstrap";
+import { Table, Tabs, Tab, Button } from "react-bootstrap";
 import { useSessionStorage } from "usehooks-ts";
 import { backendUrl } from "../components/common";
 import TournamentsTable from "../components/TournamentsTable";
+import "./Account.css";
+import ConfirmButton from "../components/ConfirmButton";
+import PageContainer from "../components/PageContainer";
+
 
 function Account() {
     const [loginData, setLoginData] = useSessionStorage("loginData", sessionStorage.getItem("loginData"));
@@ -67,11 +71,23 @@ function Account() {
         navigate(`/tournament_details?tourn_id=${tourn_id}`)
     };
 
+    const handleCreateTournamentClick = () => {
+        navigate("/tournament_create");
+    }
+
+    const handleDeleteAccountClick = () => {
+        // TODO
+    }
+
     return (
-        <>
+        <PageContainer>
             {user ? (
                 <h1>Your account, {user.fname} {user.lname}</h1>
             ): null}
+            <div className="acc-action-buttons">
+                <Button variant="light" onClick={handleCreateTournamentClick}>Create Tournament</Button>
+                <ConfirmButton variant="danger" onClick={handleDeleteAccountClick}>Delete Account</ConfirmButton>
+            </div>
             <Tabs defaultActiveKey="applied_to" className="mb-3">
                 <Tab eventKey="applied_to" title="Tournaments You Applied To">
                     {appliedTournaments ? (
@@ -84,29 +100,7 @@ function Account() {
                     ) : null}
                 </Tab>
             </Tabs>
-            {/* <Table>
-                <thead>
-                    <tr>
-                        <th>Tournaments you've applied to</th>
-                        <th>Tournaments you've created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style={{"width": "50%"}}>
-                            {appliedTournaments ? (
-                                <TournamentsTable tournaments={appliedTournaments} onTournamentClick={handleTournamentClick}/>
-                            ) : null}
-                        </td>
-                        <td style={{"width": "50%"}}>
-                            {createdTournaments ? (
-                                <TournamentsTable tournaments={createdTournaments} onTournamentClick={handleTournamentClick}/>
-                            ) : null}
-                        </td>
-                    </tr>
-                </tbody>
-            </Table> */}
-        </>
+        </PageContainer>
     );
 }
 

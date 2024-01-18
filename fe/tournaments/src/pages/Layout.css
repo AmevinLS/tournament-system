@@ -9,3 +9,8 @@
 .account-info > * {
     margin: 0.5rem;
 }
+
+.navbar-container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}

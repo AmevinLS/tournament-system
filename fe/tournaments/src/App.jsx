@@ -15,6 +15,7 @@ import EditTournament from './pages/EditTournament';
 import Account from './pages/Account';
 import ApplyToTournament from './pages/ApplyToTournament';
 import ProtectedRoute from './components/ProtectedRoute';
+import CreateTournament from './pages/CreateTournament';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                     <Route path="tournament_edit" element={<EditTournament />}/>
                     <Route path="/" element={<ProtectedRoute />}>
                         <Route path="tournament_apply" element={<ApplyToTournament />}/>
+                        <Route path="tournament_create" element={<CreateTournament />}/>
                     </Route>
                     <Route path="register" element={<Register />}/>
                     <Route path="login" element={<Login />}/>

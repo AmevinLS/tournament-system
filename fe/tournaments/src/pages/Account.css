@@ -1,0 +1,8 @@
+.acc-action-buttons {
+    display: flex;
+}
+
+.acc-action-buttons > * {
+    margin: 0.5rem;
+    margin-left: 0;
+}
