@@ -19,6 +19,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
+class PasswordResetRequestBody(BaseModel):
+    user_email: str
+
+class PasswordResetBody(BaseModel):
+    reset_token: str
+    new_password: str
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -71,5 +79,3 @@ def get_current_user(db: Session, token: Annotated[str, Depends(oauth2_scheme)])
     if user is None:
         raise credentials_exception
     return user
-
-

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Optional, Union
 from . import models, schemas
 import security
@@ -8,10 +8,10 @@ import security
 # CRUD operations
 
 # users table
-def get_user_full(db: Session, email: str) -> models.User:
+def get_user_full(db: Session, email: str) -> Optional[models.User]:
     return db.query(models.User).filter(models.User.email == email).first()
 
-def get_user_by_email(db: Session, email: str) -> models.UserPublic:
+def get_user_by_email(db: Session, email: str) -> Optional[models.UserPublic]:
     return db.query(models.UserPublic).filter(models.UserPublic.email == email).first()
 
 def get_users(db: Session) -> List[models.UserPublic]:
@@ -34,6 +34,17 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.UserPublic:
     db.commit()
     db.refresh(db_user)
     return db.query(models.UserPublic).filter(models.UserPublic.email == user.email).first()
+
+def update_user_password(db: Session, user_email: str, new_password: str) -> bool:
+    salt = security.create_salt()
+    password_hash = security.hash_password(new_password, salt)
+
+    db.query(models.User).filter(models.User.email == user_email).update({
+        models.User.hashed_password: password_hash,
+        models.User.salt: salt
+    })
+    db.commit()
+    return True
 
 def delete_user_by_email(db: Session, email: str) -> bool:
     user = db.query(models.User).filter(models.User.email == email).first()

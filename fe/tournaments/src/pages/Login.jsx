@@ -67,6 +67,40 @@ function Login() {
         }
     })
 
+    const handleResetPassword = async () => {
+        if (!formik.touched.email || formik.errors.email) {
+            alert("Please enter the email for which you want to reset the password");
+            return;
+        }
+        console.log("started handleResetPassword");
+        // const formData = new URLSearchParams();
+        // formData.append('user_email', formik.values.email);
+
+        const requestOptions = {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_email: formik.values.email
+            })
+        };
+
+        try {
+            const response = await fetch(`${backendUrl}/request_pass_reset`, requestOptions);
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+            } else {
+                alert(data.detail);
+            }
+        } catch (error) {
+            alert(error);
+        }
+    };
+
     return (
         <PageContainer>
             <h1>Log In</h1>
@@ -74,6 +108,12 @@ function Login() {
                 <i>Don't have an account?  </i>
                 <Button size="sm" variant="outline-info" onClick={() => {navigate("/register")}}>
                     Register here
+                </Button>
+            </p>
+            <p style={{paddingLeft: "1rem"}}>
+                <i>Forgot you password?  </i>
+                <Button size="sm" variant="outline-info" onClick={handleResetPassword}>
+                    Reset it here
                 </Button>
             </p>
             <Form className="login-form" onSubmit={formik.handleSubmit}>

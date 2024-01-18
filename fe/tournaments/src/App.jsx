@@ -16,6 +16,7 @@ import Account from './pages/Account';
 import ApplyToTournament from './pages/ApplyToTournament';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateTournament from './pages/CreateTournament';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                         <Route path="tournament_apply" element={<ApplyToTournament />}/>
                         <Route path="tournament_create" element={<CreateTournament />}/>
                     </Route>
+                    <Route path="reset_password" element={<ResetPassword />}/>
                     <Route path="register" element={<Register />}/>
                     <Route path="login" element={<Login />}/>
                     <Route path="account" element={<Account/>}/>

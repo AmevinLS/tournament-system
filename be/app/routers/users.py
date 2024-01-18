@@ -39,11 +39,13 @@ def add_user(user: schemas.UserCreate, background_tasks: BackgroundTasks, db: Se
         background_tasks,
         subject = "Account activation", 
         email_to = user.email, 
-        template_fname = "activation_email.html", 
+        template_fname = "button_email.html", 
         body= {
             "title": "Activation of account",
             "name": f"{user.fname} {user.lname}",
-            "activation_url": f"http://127.0.0.1:8000/users/activate?activation_token={user_activation.activation_token}"
+            "body_text": "Click the button below to activate your account",
+            "button_text": "Activate",
+            "button_url": f"http://127.0.0.1:8000/users/activate?activation_token={user_activation.activation_token}"
         }
     )
 
