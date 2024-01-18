@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from routers import users, tournaments, participations
 from security import Token, authenticate_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from dependencies import get_db
+from emails import send_email_async
 
 from typing import Annotated
 import datetime as dt
@@ -41,11 +42,26 @@ async def login_for_access_token(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    if not user.activated:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not activated",
+            headers={"WWW-Authenticate": "Bearer"}
         )
     access_token_expires = dt.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    print(f"Return access token: {access_token}")
     return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/send_email")
+async def send_email_to_user(email: str):
+    await send_email_async(
+        "This is a test email", 
+        email, 
+        "activation_email.html", 
+        {"title": "Activation email", "name": "User userovich"}
+    )
+    return {"message": "Success"}

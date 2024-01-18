@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
-from sql import schemas, crud, models
-from datetime import datetime, timedelta
+from sql import schemas, crud
 from typing import Annotated, Optional, Union, List
 
 from dependencies import get_db

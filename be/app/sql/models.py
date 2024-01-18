@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Double, Integer, CHAR, ForeignKey
+from sqlalchemy import Column, String, DateTime, Double, Integer, CHAR, ForeignKey, Boolean
 from .database import Base
 
 
@@ -9,6 +9,7 @@ class User(Base):
     email = Column(String, primary_key=True)
     hashed_password = Column(String)
     salt = Column(String)
+    activated = Column(Boolean)
 
 
 class UserPublic(Base):
@@ -18,6 +19,12 @@ class UserPublic(Base):
     lname = Column(String)
     email = Column(String, primary_key=True)
 
+
+class UserActivation(Base):
+    __tablename__ = "user_activations"
+    user_email = Column(String)
+    activation_token = Column(String, primary_key=True)
+    expiry_date = Column(DateTime)
 
 class Tournament(Base):
     __tablename__ = "tournaments"

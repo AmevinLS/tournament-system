@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
 from datetime import datetime
 
 
@@ -17,6 +17,18 @@ class UserRead(UserBase):
 
 class UserCreate(UserRead):    
     password: str = Field(..., min_length=1)
+
+
+class UserActivation(BaseModel):
+    user_email: str = Field(..., min_length=1)
+    activation_token: str = Field(..., min_length=1)
+    expiry_date: datetime
+
+    @field_validator("expiry_date")
+    def expiry_date_in_future(cls, v: datetime, info):
+        if v < datetime.now():
+            raise ValueError("'expiry_date' cannot be in the past")
+        return v
 
 
 class TournamentCreate(BaseModel):

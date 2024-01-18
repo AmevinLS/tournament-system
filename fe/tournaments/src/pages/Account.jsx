@@ -75,8 +75,25 @@ function Account() {
         navigate("/tournament_create");
     }
 
-    const handleDeleteAccountClick = () => {
-        // TODO
+    const handleDeleteAccountClick = async () => {
+        try {
+            const requestOptions = {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${loginData.accessToken}`
+                }
+            };
+            const response = await fetch(`${backendUrl}/users/delete?email=${user.email}`, requestOptions);
+            const data = await response.json();
+            if (response.ok) {
+                setLoginData(null);
+                navigate("/");
+            }
+        } catch (error) {
+            alert(error);
+        }
     }
 
     return (

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional, Union
 from . import models, schemas
 import security
@@ -26,12 +26,14 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.UserPublic:
         lname=user.lname, 
         email=user.email, 
         hashed_password=password_hash,
-        salt=salt
+        salt=salt,
+        activated=False
     )
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return db.query(models.UserPublic).filter(models.UserPublic.email == user.email)
+    return db.query(models.UserPublic).filter(models.UserPublic.email == user.email).first()
 
 def delete_user_by_email(db: Session, email: str) -> bool:
     user = db.query(models.User).filter(models.User.email == email).first()
@@ -48,6 +50,13 @@ def delete_users(db: Session) -> bool:
         for user in users:
             db.delete(user)
         db.commit()
+    return True
+
+def activate_user_by_email(db: Session, email: str) -> bool:
+    db.query(models.User).filter(models.User.email == email).update({
+        models.User.activated: True
+    })
+    db.commit()
     return True
 
 
@@ -90,7 +99,7 @@ def update_tournament(db: Session, tournament: schemas.TournamentUpdate) -> bool
     return True
 
 def create_tournament(db: Session, tournament: schemas.TournamentCreate) -> models.Tournament:
-    tourn_id = uuid4()
+    tourn_id = str(uuid4())
     db_tournament = models.Tournament(
         tourn_id = tourn_id,
         name = tournament.name,
@@ -130,7 +139,6 @@ def get_participations(
         user_email: Optional[str] = None,
         tourn_id: Optional[str] = None
     ) -> Union[Optional[models.Participation], List[models.Participation]]:
-    print(user_email, tourn_id)
     query = db.query(models.Participation)
     if user_email is not None:
         query = query.filter(models.Participation.user_email == user_email)
@@ -160,3 +168,26 @@ def get_tournaments_by_user_email_participant(db: Session, user_email: str) -> L
         .filter(models.Participation.user_email == user_email)
         .all()
     )
+
+# activations table
+def get_user_activation(db: Session, activation_token: str) -> Optional[models.UserActivation]:
+    return db.query(models.UserActivation).filter(models.UserActivation.activation_token == activation_token).first()
+
+def create_user_activation(db: Session, user_activation: schemas.UserActivation) -> models.UserActivation:
+    db_user_activation = models.UserActivation(
+        user_email = user_activation.user_email,
+        activation_token = user_activation.activation_token,
+        expiry_date = user_activation.expiry_date
+    )
+
+    db.add(db_user_activation)
+    db.commit()
+    db.refresh(db_user_activation)
+
+def delete_user_activation(db: Session, activation_token: str) -> bool:
+    db_user_activation = db.query(models.UserActivation).filter(models.UserActivation.activation_token == activation_token).first()
+    if db_user_activation:
+        db.delete(db_user_activation)
+        db.commit()
+        return True
+    return False
