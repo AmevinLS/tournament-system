@@ -1,9 +1,13 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.sql import case
 from uuid import uuid4
 from datetime import datetime
 from typing import List, Optional, Union
+import time
 from . import models, schemas
 import security
+import numpy as np
 
 # CRUD operations
 
@@ -119,7 +123,8 @@ def create_tournament(db: Session, tournament: schemas.TournamentCreate) -> mode
         loc_latitude = tournament.loc_latitude,
         loc_longitude = tournament.loc_longitude,
         max_participants = tournament.max_participants,
-        apply_deadline = tournament.apply_deadline
+        apply_deadline = tournament.apply_deadline,
+        curr_participants = 0
     )
     db.add(db_tournament)
     db.commit()
@@ -143,6 +148,45 @@ def delete_tournaments(db: Session) -> bool:
         db.commit()
     return True
 
+def increment_tournament_curr_participants(db: Session, tourn_id: str):
+    db.query(models.Tournament).filter(models.Tournament.tourn_id == tourn_id).update({
+        models.Tournament.curr_participants: models.Tournament.curr_participants + 1
+    })
+    time.sleep(10)
+    db.commit()
+
+def start_tournaments(db: Session, tourn_ids: List[str]):
+    db.query(models.Tournament).filter(models.Tournament.tourn_id.in_(tourn_ids)).update({
+        models.Tournament.started: True
+    })
+
+    for tourn_id in tourn_ids:
+        user_emails, elos = [], []
+        for row in db.query(models.Participation.user_email, models.Participation.elo).filter(models.Participation.tourn_id == tourn_id).all():
+            user_emails.append(row[0])
+            elos.append(row[1])
+        user_emails = np.array(user_emails)
+        elos = np.array(elos)
+        num_participants = len(user_emails)
+        num_matches = int(np.ceil(num_participants / 2.0))
+        
+        elo_inds_sorted = np.argsort(-elos)
+        match_inds = np.array([0] * num_participants)
+        
+        match_inds[elo_inds_sorted[:num_matches]] = np.arange(1, num_matches+1)
+        remaining_inds = np.where(match_inds == 0)[0]
+        np.random.shuffle(remaining_inds)
+        match_inds[remaining_inds] = np.arange(1, num_matches+1)[:len(remaining_inds)]
+        
+        # mapping = {user_email: match_ind for user_email, match_ind in zip(user_emails, match_inds)}
+        for user_email, match_ind in zip(user_emails, match_inds):
+            (db.query(models.Participation)
+                .filter(models.Participation.tourn_id == tourn_id, models.Participation.user_email == user_email).update({
+                    models.Participation.match_ind: match_ind
+                })
+            )
+            db.commit()
+
 
 # participations table
 def get_participations(
@@ -160,17 +204,20 @@ def get_participations(
         return query.all()
     return query.first()
 
-def add_participation(db: Session, participation: schemas.ParticipationCreate) -> models.Participation:
+def add_participation(db: Session, participation: schemas.ParticipationCreate) -> bool:
     db_participation = models.Participation(
         user_email=participation.user_email,
         tourn_id=participation.tourn_id,
         license_number=participation.license_number,
         elo=participation.elo
     )
-    db.add(db_participation)
-    db.commit()
-    db.refresh(db_participation)
-    return db_participation
+    try:
+        increment_tournament_curr_participants(db, db_participation.tourn_id)
+        db.add(db_participation)
+        db.commit()
+    except OperationalError as e:
+        return False
+    return True
 
 def get_tournaments_by_user_email_participant(db: Session, user_email: str) -> List[models.Tournament]:
     return (

@@ -111,7 +111,7 @@ function Login() {
                 </Button>
             </p>
             <p style={{paddingLeft: "1rem"}}>
-                <i>Forgot you password?  </i>
+                <i>Forgot your password?  </i>
                 <Button size="sm" variant="outline-info" onClick={handleResetPassword}>
                     Reset it here
                 </Button>

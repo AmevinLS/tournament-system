@@ -14,6 +14,7 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             .email()
             .required("Cannot be empty"),
         time: Yup.date()
+            .min(Date(), "Cannot be in the past")
             .required("Cannot be empty"),
         loc_latitude: Yup.number()
             .min(-90, "Must be in range [-90, 90]").max(90, "Must be in range [-90, 90]")
@@ -26,7 +27,15 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
             .min(2, "Must be at least 2")
             .integer(),
         apply_deadline: Yup.date()
+            .min(Date(), "Cannot be in the past")
             .required("Cannot be empty")
+            .when(["time"], (time) => {
+                if (time) {
+                    return Yup.date()
+                        .max(time, "Apply date must be earlier than Time of tournament");
+                        // .typeError('Apply Deadline is required');
+                }
+            })
     });
 
     const formik = useFormik({
@@ -92,7 +101,11 @@ function TournamentForm({ tournamentData, organizerEmail, submitText, onSubmit }
                     <Form.Control name="loc_longitude" type="text" value={formik.values.loc_longitude} onChange={formik.handleChange} isInvalid={formik.touched.loc_longitude && !!formik.errors.loc_longitude}/>
                     <Form.Control.Feedback type="invalid">{formik.errors.loc_longitude}</Form.Control.Feedback>
                 </Form.Group>
-                <LocationMap latitude={formik.values.loc_latitude} longitude={formik.values.loc_longitude} markerText="Pog"/>
+                <LocationMap 
+                    latitude={!!Number(formik.values.loc_latitude) ? formik.values.loc_latitude : 0} 
+                    longitude={!!Number(formik.values.loc_longitude) ? formik.values.loc_longitude : 0} 
+                    markerText="Pog"
+                />
                 <Button variant="primary" type="submit">{submitText}</Button>
             </Form>
         </>

@@ -6,7 +6,7 @@ import { backendUrl } from "../components/common";
 import "./AllTournaments.css";
 import PageContainer from "../components/PageContainer";
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 5;
 
 function Tournaments() {
     const [tournaments, setTournaments] = useState([]);

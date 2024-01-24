@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, status, BackgroundTasks
+from fastapi.concurrency import contextmanager_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -10,12 +11,39 @@ from security import (
 )
 from dependencies import get_db
 from emails import send_email_background
-import sql.crud as crud
+from sql import crud, models
+from utils import repeat_every
+import asyncio
 
 from typing import Annotated
 import datetime as dt
+from contextlib import asynccontextmanager, contextmanager
 
-app = FastAPI()
+
+async def start_tournaments(seconds: int, max_repeats: int = None):
+    async with contextmanager_in_threadpool(contextmanager(get_db)()) as db:
+        db: Session
+        curr_repeats = 0
+        while max_repeats is None or curr_repeats < max_repeats:
+            print("Checking for tournaments to start")
+            db_tournaments = (
+                db.query(models.Tournament.tourn_id)
+                .filter(models.Tournament.time < dt.datetime.now(), ~models.Tournament.started)
+                .all()
+            )
+            if len(db_tournaments) > 0:
+                tourn_ids = [row[0] for row in db_tournaments]
+                crud.start_tournaments(db, tourn_ids)
+                print("Started tournaments:", tourn_ids)
+            curr_repeats += 1
+            await asyncio.sleep(seconds)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    asyncio.create_task(start_tournaments(seconds=30, max_repeats=0))
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 origins = [
     "http://localhost:5173"

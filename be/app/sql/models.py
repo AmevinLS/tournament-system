@@ -36,6 +36,8 @@ class Tournament(Base):
     loc_longitude = Column(Double)
     max_participants = Column(Integer)
     apply_deadline = Column(DateTime)
+    curr_participants = Column(Integer)
+    started = Column(Boolean)
 
 
 class Participation(Base):
@@ -44,3 +46,4 @@ class Participation(Base):
     tourn_id = Column(String, ForeignKey("tournaments.tourn_id"), primary_key=True)
     license_number = Column(CHAR(6))
     elo = Column(Integer)
+    match_ind = Column(Integer)

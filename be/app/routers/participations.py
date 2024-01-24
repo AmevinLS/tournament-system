@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
-from sql import schemas, crud
+from sql import schemas, crud, models
 from typing import Annotated, Optional, Union, List
 
 from dependencies import get_db
@@ -30,7 +30,13 @@ def add_participation(participation: schemas.ParticipationCreate, token: Annotat
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Tournament with such ID does not exist"
         )
-    return crud.add_participation(db, participation)
+    
+    if not crud.add_participation(db, participation):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Tournament already full (or other error occurred)"
+        )
+    return {"message": "Successfully added participation"}
 
 @router.get("/tourns_applied")
 def read_applied_to_tournaments(user_email: str, token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)):

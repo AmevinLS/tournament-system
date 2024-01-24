@@ -13,7 +13,7 @@ function TournamentsTable({ tournaments, onTournamentClick }) {
                     <th>Name</th>
                     <th>Tournament Time</th>
                     <th>Organizer</th>
-                    <th>Max participants</th>
+                    <th>Participants</th>
                     <th>Application Deadline</th>
                 </tr>
             </thead>
@@ -22,10 +22,10 @@ function TournamentsTable({ tournaments, onTournamentClick }) {
                     return (
                         <tr className="tournament-tr" key={tournament.tourn_id} data-key={tournament.tourn_id} onClick={handleItemClick}>
                             <td>{tournament.name}</td>
-                            <td>{tournament.time}</td>
+                            <td>{tournament.time.replace("T", " ")}</td>
                             <td>{tournament.organizer_email}</td>
-                            <td>{tournament.max_participants}</td>
-                            <td>{tournament.apply_deadline}</td>
+                            <td>{tournament.curr_participants} / {tournament.max_participants}</td>
+                            <td>{tournament.started ? ("(STARTED)") : tournament.apply_deadline.replace("T", " ")}</td>
                         </tr>
                     );
                 })}
