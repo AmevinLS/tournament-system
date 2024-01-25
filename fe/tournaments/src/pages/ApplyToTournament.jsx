@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useSessionStorage } from "usehooks-ts";
 import { backendUrl } from "../components/common";
 import ParticipationForm from "../components/ParticipationForm";
+import PageContainer from "../components/PageContainer";
 
 
 function ApplyToTournament() {
@@ -23,6 +24,7 @@ function ApplyToTournament() {
 
             const response = await fetch(`${backendUrl}/participations`, requestOptions);
             if (response.ok) {
+                alert("Successfully applied to tournament");
                 navigate("/");
             }
         } catch (error) {
@@ -31,7 +33,7 @@ function ApplyToTournament() {
     };
 
     return (
-        <>
+        <PageContainer>
             <h1>Apply to tournament</h1>
             {loginData ? (
                 <ParticipationForm 
@@ -40,7 +42,7 @@ function ApplyToTournament() {
                     onSubmit={handleSubmit}
                 />
             ) : null}
-        </>
+        </PageContainer>
     );
 }
 

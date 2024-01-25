@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, model_validator, field_validator
 from datetime import datetime
+from typing import Optional
 
 
 EMAIL_REGEX = r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+'
@@ -62,4 +63,4 @@ class ParticipationCreate(Participation):
     pass
 
 class ParticipationRead(Participation):
-    match_ind: int = Field(..., ge=1)
+    match_ind: Optional[int] = Field(..., ge=1)

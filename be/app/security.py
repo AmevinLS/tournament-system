@@ -70,7 +70,8 @@ def get_current_user(db: Session, token: Annotated[str, Depends(oauth2_scheme)])
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         email: str = payload.get("sub")
-        if email is None:
+        expire: dt.datetime = payload.get("exp") 
+        if email is None or dt.datetime.fromtimestamp(expire) < dt.datetime.now():
             raise credentials_exception
         token_data = TokenData(email=email)
     except JWTError:

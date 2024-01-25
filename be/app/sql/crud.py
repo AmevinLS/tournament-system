@@ -124,7 +124,8 @@ def create_tournament(db: Session, tournament: schemas.TournamentCreate) -> mode
         loc_longitude = tournament.loc_longitude,
         max_participants = tournament.max_participants,
         apply_deadline = tournament.apply_deadline,
-        curr_participants = 0
+        curr_participants = 0,
+        started = False
     )
     db.add(db_tournament)
     db.commit()

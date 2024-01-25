@@ -109,7 +109,7 @@ function TournamentDetails() {
                     </thead>
                     <tbody>
                         {participations.map(participation => (
-                            <tr>
+                            <tr key={participation.user_email}>
                                 <td>{participation.user_email}</td>
                                 <td>{participation.match_ind}</td>
                             </tr>

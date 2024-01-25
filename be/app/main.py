@@ -11,9 +11,10 @@ from security import (
 )
 from dependencies import get_db
 from emails import send_email_background
-from sql import crud, models
+from sql import crud, models, schemas
 from utils import repeat_every
 import asyncio
+import random
 
 from typing import Annotated
 import datetime as dt
@@ -40,7 +41,7 @@ async def start_tournaments(seconds: int, max_repeats: int = None):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    asyncio.create_task(start_tournaments(seconds=30, max_repeats=0))
+    asyncio.create_task(start_tournaments(seconds=30, max_repeats=5))
     yield
 
 app = FastAPI(lifespan=lifespan)
@@ -116,3 +117,50 @@ def reset_password(reset_form: PasswordResetBody, db: Session = Depends(get_db))
     user = get_current_user(db, reset_form.reset_token)
     crud.update_user_password(db, user.email, reset_form.new_password)
     return {"message": "Password reset successfully"}
+
+@app.post("/_generate")
+def generate_users_tournaments(num_users: int, num_tournaments: int, db: Session = Depends(get_db)):
+    users = [
+        schemas.UserCreate(email=f"dummy{i}@example.com", fname=f"Dummy{i}", lname=f"Lname{i}", password="nikita") 
+        for i in range(num_users)
+    ]
+
+    tourns: list[schemas.TournamentCreate] = []
+    participant_emails_l = []
+    for i in range(num_tournaments):
+        organizer = random.choice(users)
+        time = dt.datetime.now() + dt.timedelta(minutes=random.randint(3, 10))
+        tourn = schemas.TournamentCreate(
+            name=f"EasyTourney{i}", organizer_email=organizer.email, 
+            time=time,
+            loc_latitude=random.randint(-90, 90), loc_longitude=random.randint(-180, 180),
+            max_participants=num_users//2,
+            apply_deadline=(time - dt.timedelta(seconds=10))
+        )
+
+        num_participants = random.randint(0, tourn.max_participants)
+        participant_emails = [user.email for user in random.sample(users, num_participants)]
+        participant_emails_l.append(participant_emails)
+
+        tourns.append(tourn)
+
+    
+    for user in users:
+        crud.create_user(db, user)
+        db.query(models.User).filter(models.User.email == user.email).update({models.User.activated: True})
+    db.commit()
+
+    for tourn, participant_emails in zip(tourns, participant_emails_l):
+        tourn = crud.create_tournament(db, tourn)
+        participations = [
+            schemas.ParticipationCreate(
+                user_email=email, 
+                tourn_id=tourn.tourn_id, 
+                license_number="lolkek", 
+                elo=random.randint(1000, 2000)
+            ) 
+            for email in participant_emails
+        ]
+        for participation in participations:
+            crud.add_participation(db, participation)
+    db.commit()
