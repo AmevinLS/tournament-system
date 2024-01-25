@@ -62,4 +62,4 @@ class ParticipationCreate(Participation):
     pass
 
 class ParticipationRead(Participation):
-    pass
+    match_ind: int = Field(..., ge=1)

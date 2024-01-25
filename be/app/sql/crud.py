@@ -201,7 +201,7 @@ def get_participations(
         query = query.filter(models.Participation.tourn_id == tourn_id)
     
     if None in [user_email, tourn_id]:
-        return query.all()
+        return query.order_by(models.Participation.match_ind).all()
     return query.first()
 
 def add_participation(db: Session, participation: schemas.ParticipationCreate) -> bool:

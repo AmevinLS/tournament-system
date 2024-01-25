@@ -43,6 +43,7 @@ function EditTournament() {
             const response = await fetch(`${backendUrl}/tournaments/update`, requestOptions);
             if (response.ok) {
                 setTournament({...newTournament, tourn_id: tournament.tourn_id});
+                alert("Tournament successfully updated");
             }
         } catch (error) {
             alert(error);
