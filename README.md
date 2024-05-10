@@ -2,6 +2,16 @@
 
 This is mainly just a project to gain practical experience a "full-stack" implementation of an app with perstisting data in databases.
 
+
+## Features include:
+- Users create their account with an email and password. This password is securely stored with salting.
+- Users have to activate their account before performing any actions. An email is sent to them with an Activation Link.
+- Each user can create a tournament with a name, location, time, max_participants, application_deadline
+- Each use can also participate in other user's tournaments by specifying their 'license_number' and 'elo' for the related discipline - this elo affects with whom the user will be matched during the tournament
+- After deadline, the first 1v1 round of matches are generated
+
+
+
 ## How to run:
 - **Cloning repository**
     ```
@@ -20,11 +30,6 @@ This is mainly just a project to gain practical experience a "full-stack" implem
     npm install
     npm run dev
     ```
-
-
-## Features include:
-- User authentication with password hashing/salting
-- User account activation through email
 
 
 ## Technologies
