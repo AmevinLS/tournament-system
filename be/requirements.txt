@@ -1,0 +1,10 @@
+numpy
+fastapi
+pydantic
+sqlalchemy
+mysql
+python-dotenv
+python-jose
+nodejs
+fastapi-mail
+mysqlclient
